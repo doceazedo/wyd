@@ -87,9 +87,6 @@ const parseCounts = (root: HTMLElement) => {
 	return {
 		...counts,
 		diary: sectionCount(root, "/diary/"),
-		ratings: toNumber(
-			root.querySelector(".ratings-histogram-chart a.accessory")?.text,
-		),
 	};
 };
 
