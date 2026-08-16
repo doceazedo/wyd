@@ -4,6 +4,23 @@ import { getTextDirection } from "$lib/paraglide/runtime";
 import { paraglideMiddleware } from "$lib/paraglide/server";
 import { cacheControl, read, write } from "$lib/server/cache";
 import { consume, retryAfter } from "$lib/server/rate-limit";
+import { record, type CacheStatus } from "$lib/server/usage";
+
+const handleUsage: Handle = async ({ event, resolve }) => {
+	if (!event.url.pathname.startsWith("/api/")) return resolve(event);
+
+	const startedAt = Date.now();
+	const response = await resolve(event);
+
+	await record({
+		pathname: event.url.pathname,
+		status: response.status,
+		cache: (response.headers.get("X-Cache") as CacheStatus) || "BYPASS",
+		duration: Date.now() - startedAt,
+	});
+
+	return response;
+};
 
 const handleParaglide: Handle = ({ event, resolve }) =>
 	paraglideMiddleware(event.request, ({ request, locale }) => {
@@ -70,6 +87,7 @@ const handleRateLimit: Handle = async ({ event, resolve }) => {
 };
 
 export const handle: Handle = sequence(
+	handleUsage,
 	handleCache,
 	handleRateLimit,
 	handleParaglide,

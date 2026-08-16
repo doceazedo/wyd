@@ -6,6 +6,6 @@ import db0Driver from "unstorage/drivers/db0";
 export const storage = createStorage({
 	driver: db0Driver({
 		database: createDatabase(sqlite({ name: "db" })),
-		tableName: "cache",
+		tableName: "data",
 	}),
 });
