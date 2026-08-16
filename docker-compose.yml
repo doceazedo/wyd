@@ -1,0 +1,12 @@
+services:
+  wyd:
+    image: doceazedo/wyd:latest
+    restart: unless-stopped
+    ports:
+      - "${PORT:-3000}:3000"
+    volumes:
+      - ./.data:/app/.data
+      - impers-cache:/app/.cache/impers
+
+volumes:
+  impers-cache:
