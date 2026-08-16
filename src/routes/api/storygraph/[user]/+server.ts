@@ -336,14 +336,13 @@ const parseProfile = (root: HTMLElement, requested: string) => {
 	};
 };
 
-export const GET: RequestHandler = async ({ params, setHeaders }) => {
+export const GET: RequestHandler = async ({ params }) => {
 	try {
 		const root = parse(await fetchProfile(params.user));
 		if (clean(root.querySelector("title")?.text).startsWith("Not Found")) {
 			error(404, `there is no StoryGraph user named "${params.user}"`);
 		}
 
-		setHeaders({ "cache-control": "private, max-age=60" });
 		return json(parseProfile(root, params.user));
 	} catch (err) {
 		if (err instanceof StorygraphError) error(err.status, err.message);

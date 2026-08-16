@@ -161,7 +161,7 @@ const parseProfile = (root: HTMLElement, requested: string) => {
 	};
 };
 
-export const GET: RequestHandler = async ({ params, setHeaders }) => {
+export const GET: RequestHandler = async ({ params }) => {
 	try {
 		const profile = await withSession(async (session) => {
 			const root = await fetchPage(
@@ -179,7 +179,6 @@ export const GET: RequestHandler = async ({ params, setHeaders }) => {
 			return parsed;
 		});
 
-		setHeaders({ "cache-control": "private, max-age=60" });
 		return json(profile);
 	} catch (err) {
 		if (err instanceof LetterboxdError) error(err.status, err.message);
