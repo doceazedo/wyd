@@ -1,17 +1,8 @@
-import { createDatabase } from "db0";
-import sqlite from "db0/connectors/node-sqlite";
-import { createStorage, type StorageValue } from "unstorage";
-import db0Driver from "unstorage/drivers/db0";
+import { type StorageValue } from "unstorage";
 import { env } from "$env/dynamic/public";
+import { storage } from "./db";
 
 const DURATION = Number(env.PUBLIC_CACHE_DURATION || 1) * 60 * 60 * 1000;
-
-const storage = createStorage({
-	driver: db0Driver({
-		database: createDatabase(sqlite({ name: "cache" })),
-		tableName: "cache",
-	}),
-});
 
 export const read = async (key: string) => {
 	if (!DURATION) return null;
