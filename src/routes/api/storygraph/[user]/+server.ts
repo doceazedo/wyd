@@ -42,13 +42,22 @@ class StorygraphError extends Error {
 let cached: { cookies: Cookies; expiresAt: number } | null = null;
 let signingIn: Promise<Cookies> | null = null;
 
-const createSession = (cookies: Cookies = {}) =>
-	new Session({
+const withSession = async <T>(
+	cookies: Cookies,
+	use: (session: Session) => Promise<T>,
+): Promise<T> => {
+	const session = new Session({
 		baseUrl: BASE_URL,
 		impersonate: "chrome",
 		cookies,
 		timeout: 30,
 	});
+	try {
+		return await use(session);
+	} finally {
+		await session.close();
+	}
+};
 
 const signIn = async (): Promise<Cookies> => {
 	const { STORYGRAPH_USERNAME, STORYGRAPH_PASSWORD } = env;
@@ -59,8 +68,7 @@ const signIn = async (): Promise<Cookies> => {
 		);
 	}
 
-	const session = createSession();
-	try {
+	return withSession({}, async (session) => {
 		const form = await session.get("/users/sign_in");
 		const token = parse(form.text)
 			.querySelector('input[name="authenticity_token"]')
@@ -85,9 +93,7 @@ const signIn = async (): Promise<Cookies> => {
 		}
 
 		return session.cookies.toObject();
-	} finally {
-		await session.close();
-	}
+	});
 };
 
 const getCookies = async (refresh = false): Promise<Cookies> => {
@@ -109,9 +115,8 @@ const getCookies = async (refresh = false): Promise<Cookies> => {
 const requestProfile = async (
 	path: string,
 	refresh: boolean,
-): Promise<string | null> => {
-	const session = createSession(await getCookies(refresh));
-	try {
+): Promise<string | null> =>
+	withSession(await getCookies(refresh), async (session) => {
 		const resp = await session.get(path);
 		if (resp.status !== 200) {
 			throw new StorygraphError(
@@ -120,10 +125,7 @@ const requestProfile = async (
 		}
 		const isSignedIn = resp.text.includes('id="cu_id"');
 		return isSignedIn ? resp.text : null;
-	} finally {
-		await session.close();
-	}
-};
+	});
 
 const fetchProfile = async (user: string): Promise<string> => {
 	const path = `/profile/${encodeURIComponent(user)}`;
