@@ -103,6 +103,39 @@ export const SERVICES = {
 export const maxValue = (option: WidgetOption, values: WidgetValues) =>
 	typeof option.max === "function" ? option.max(values) : (option.max ?? null);
 
+const BOX = "background:var(--wyd-ink)";
+
+const SKELETON_STYLES = [
+	`.wyd-skeleton{--wyd-ink:color-mix(in srgb,currentColor 10%,transparent);display:flex;flex-wrap:wrap;gap:.75rem;container-type:inline-size}`,
+	`.wyd-skeleton i{flex:1 1 calc((100% - (var(--wyd-columns) - 1) * .75rem)/var(--wyd-columns))}`,
+	`.wyd-skeleton i::before{content:"";display:block;aspect-ratio:2/3;${BOX}}`,
+];
+
+const SKELETON_LABEL_STYLE = [
+	`.wyd-skeleton i{padding-bottom:.6875rem}`,
+	`.wyd-skeleton i::after{content:"";display:block;height:.6875rem;margin:.5rem 40% 0 0;${BOX}}`,
+].join("");
+
+const SKELETON_BREAKPOINTS = [
+	"@container (max-width:32rem){.wyd-skeleton i{flex-basis:calc((100% - 1.5rem)/3)}}",
+	"@container (max-width:20rem){.wyd-skeleton i{flex-basis:calc((100% - .75rem)/2)}}",
+];
+
+export const skeleton = (values: WidgetValues) => {
+	const columns = Number(values["data-count"]) || 5;
+	const styles = [
+		...SKELETON_STYLES,
+		...(values["data-labels"] === "false" ? [] : [SKELETON_LABEL_STYLE]),
+		...SKELETON_BREAKPOINTS,
+	];
+	const cells = Array.from({ length: columns }, () => "<i></i>").join("");
+
+	return [
+		`<style>${styles.join("")}</style>`,
+		`<div class="wyd-skeleton" style="--wyd-columns: ${columns}">${cells}</div>`,
+	].join("\n");
+};
+
 export const snippet = (
 	widget: Widget,
 	values: WidgetValues,
@@ -113,5 +146,8 @@ export const snippet = (
 		.map(([attribute, value]) => ` ${attribute}="${value}"`)
 		.join("");
 
-	return `<script src="${origin}/widgets/${widget.name}.js"${attributes} async></script>`;
+	return [
+		`<script src="${origin}/widgets/${widget.name}.js"${attributes} async></script>`,
+		skeleton(values),
+	].join("\n");
 };

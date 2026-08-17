@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { WidgetValues } from "$lib/services";
+	import { skeleton, type WidgetValues } from "$lib/services";
 
 	type Props = { name: string; attributes: WidgetValues };
 
@@ -11,6 +11,8 @@
 
 		const host = container;
 		const entries = Object.entries(attributes).filter(([, value]) => !!value);
+		host.innerHTML = skeleton(attributes);
+
 		const timer = setTimeout(() => {
 			const script = document.createElement("script");
 			script.src = `/widgets/${name}.js`;
@@ -18,8 +20,8 @@
 			entries.forEach(([attribute, value]) =>
 				script.setAttribute(attribute, value),
 			);
-			host.append(script);
-		}, 300);
+			host.insertBefore(script, host.firstChild);
+		}, 600);
 
 		return () => {
 			clearTimeout(timer);
