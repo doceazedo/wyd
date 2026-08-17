@@ -10,7 +10,6 @@
 </script>
 
 <svelte:head><link rel="icon" href={favicon} /></svelte:head>
-{@render children()}
 
 <div style="display:none">
 	{#each locales as locale (locale)}
@@ -18,4 +17,8 @@
 			>{locale}</a
 		>
 	{/each}
+</div>
+
+<div class="mx-auto max-w-5xl px-3 md:px-12 xl:px-0">
+	{@render children()}
 </div>
