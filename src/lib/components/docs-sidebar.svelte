@@ -7,6 +7,7 @@
 	import { SERVICES } from "$lib/services";
 	import { RiBook2Line, RiQuestionLine, RiListCheck3 } from "remixicon-svelte";
 	import type { Component } from "svelte";
+	import LanguageSwitcher from "./language-switcher.svelte";
 
 	const ITEMS = [
 		{
@@ -85,4 +86,11 @@
 			</Sidebar.GroupContent>
 		</Sidebar.Group>
 	</Sidebar.Content>
+	<Sidebar.Footer>
+		<Sidebar.Menu>
+			<Sidebar.MenuItem>
+				<LanguageSwitcher />
+			</Sidebar.MenuItem>
+		</Sidebar.Menu>
+	</Sidebar.Footer>
 </Sidebar.Root>
