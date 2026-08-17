@@ -1,26 +1,11 @@
 <script lang="ts">
+	import { resolve } from "$app/paths";
+	import type { Pathname } from "$app/types";
 	import { Button } from "$lib/components/ui/button";
 	import * as Card from "$lib/components/ui/card";
-	import { siLetterboxd, siSteam, siThestorygraph } from "simple-icons";
+	import { SERVICES } from "$lib/services";
 
-	const SERVICES = [
-		{
-			icon: siLetterboxd.svg,
-			name: "Letterboxd",
-			description: "Grab your favorite and recently watched movies.",
-		},
-		{
-			icon: siSteam.svg,
-			name: "Steam",
-			description: "Grab your recently played games.",
-		},
-		{
-			icon: siThestorygraph.svg,
-			name: "Storygraph",
-			description:
-				"Grab your currently reading books, recently read, and to-read.",
-		},
-	];
+	const services = Object.values(SERVICES);
 </script>
 
 <header class="flex flex-col gap-6 py-24">
@@ -42,17 +27,22 @@
 </header>
 
 <div class="grid grid-cols-1 gap-3 md:grid-cols-3 md:gap-6">
-	{#each SERVICES as service, i (i)}
-		<Card.Root>
-			<Card.Content class="flex flex-col gap-3">
-				<i
-					class="flex size-10 items-center justify-center bg-muted [&>svg]:size-6 [&>svg]:fill-muted-foreground"
-				>
-					{@html service.icon}
-				</i>
-				<p class="text-base font-medium">{service.name}</p>
-				<p class="opacity-80">{service.description}</p>
-			</Card.Content>
-		</Card.Root>
+	{#each services as service (service.name)}
+		<a
+			class="transition-all hover:-translate-y-1"
+			href={resolve(`/services/${service.name}` as Pathname)}
+		>
+			<Card.Root class="h-full transition-all hover:ring-primary">
+				<Card.Content class="flex flex-col gap-3">
+					<i
+						class="flex size-10 items-center justify-center bg-muted [&>svg]:size-6 [&>svg]:fill-muted-foreground"
+					>
+						{@html service.icon}
+					</i>
+					<p class="text-base font-medium">{service.title}</p>
+					<p class="opacity-80">{service.description}</p>
+				</Card.Content>
+			</Card.Root>
+		</a>
 	{/each}
 </div>

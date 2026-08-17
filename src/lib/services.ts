@@ -19,6 +19,7 @@ export type Widget = {
 export type Service = {
 	name: string;
 	title: string;
+	description: string;
 	icon: string;
 	widget: Widget;
 };
@@ -54,6 +55,7 @@ export const SERVICES = {
 	letterboxd: {
 		name: "letterboxd",
 		title: "Letterboxd",
+		description: "Your top 4 films, and the movies you watched recently.",
 		icon: siLetterboxd.svg,
 		widget: {
 			name: "letterboxd",
@@ -73,6 +75,8 @@ export const SERVICES = {
 	steam: {
 		name: "steam",
 		title: "Steam",
+		description:
+			"Playtime of your recently played games and what you're playing right now.",
 		icon: siSteam.svg,
 		widget: {
 			name: "steam",
@@ -82,6 +86,8 @@ export const SERVICES = {
 	storygraph: {
 		name: "storygraph",
 		title: "Storygraph",
+		description:
+			"Your currently reading books, recently read, to-read list, favorites, and owned.",
 		icon: siThestorygraph.svg,
 		widget: {
 			name: "storygraph",
