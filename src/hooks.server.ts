@@ -6,6 +6,27 @@ import { cacheControl, read, write } from "$lib/server/cache";
 import { consume, retryAfter } from "$lib/server/rate-limit";
 import { record, type CacheStatus } from "$lib/server/usage";
 
+const CORS_HEADERS = {
+	"Access-Control-Allow-Origin": "*",
+	"Access-Control-Allow-Methods": "GET, OPTIONS",
+	"Access-Control-Allow-Headers": "*",
+	"Access-Control-Max-Age": "86400",
+};
+
+const handleCors: Handle = async ({ event, resolve }) => {
+	if (!event.url.pathname.startsWith("/api/")) return resolve(event);
+
+	if (event.request.method === "OPTIONS")
+		return new Response(null, { status: 204, headers: CORS_HEADERS });
+
+	const response = await resolve(event);
+	Object.entries(CORS_HEADERS).forEach(([key, value]) =>
+		response.headers.set(key, value),
+	);
+
+	return response;
+};
+
 const handleUsage: Handle = async ({ event, resolve }) => {
 	if (!event.url.pathname.startsWith("/api/")) return resolve(event);
 
@@ -87,6 +108,7 @@ const handleRateLimit: Handle = async ({ event, resolve }) => {
 };
 
 export const handle: Handle = sequence(
+	handleCors,
 	handleUsage,
 	handleCache,
 	handleRateLimit,
