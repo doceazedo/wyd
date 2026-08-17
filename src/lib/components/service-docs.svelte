@@ -10,7 +10,10 @@
 </script>
 
 <div class="flex flex-col gap-12 pb-24">
-	<PageTitle>{service.title}</PageTitle>
+	<hgroup class="flex flex-col gap-1.5">
+		<PageTitle>{service.title}</PageTitle>
+		<p class="text-foreground/80">{service.description()}</p>
+	</hgroup>
 	<WidgetDocs {service} />
 	<ApiDocs {service} />
 </div>
