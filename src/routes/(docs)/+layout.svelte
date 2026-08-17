@@ -7,7 +7,7 @@
 
 <Sidebar.Provider>
 	<DocsSidebar />
-	<main class="min-w-0 flex-1 md:py-12">
+	<main class="min-w-0 flex-1 py-3 md:py-12">
 		{@render children?.()}
 	</main>
 </Sidebar.Provider>
