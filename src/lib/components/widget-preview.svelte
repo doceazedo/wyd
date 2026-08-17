@@ -1,21 +1,26 @@
 <script lang="ts">
-	import { skeleton, type WidgetValues } from "$lib/services";
+	import {
+		attributes,
+		skeleton,
+		type Widget,
+		type WidgetValues,
+	} from "$lib/services";
 
-	type Props = { name: string; attributes: WidgetValues };
+	type Props = { widget: Widget; values: WidgetValues };
 
-	let { name, attributes }: Props = $props();
+	let { widget, values }: Props = $props();
 	let container = $state<HTMLDivElement | null>(null);
 
 	$effect(() => {
 		if (!container) return;
 
 		const host = container;
-		const entries = Object.entries(attributes).filter(([, value]) => !!value);
-		host.innerHTML = skeleton(attributes);
+		const entries = attributes(widget, values);
+		host.innerHTML = skeleton(widget, values);
 
 		const timer = setTimeout(() => {
 			const script = document.createElement("script");
-			script.src = `/widgets/${name}.js`;
+			script.src = `/widgets/${widget.name}.js`;
 			script.async = true;
 			entries.forEach(([attribute, value]) =>
 				script.setAttribute(attribute, value),

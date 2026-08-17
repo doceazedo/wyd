@@ -4,6 +4,7 @@ import type { WidgetProps } from "./types";
 declare const __WIDGET_STYLES__: string;
 
 const SKELETON = "wyd-skeleton";
+const VARIABLES = ["--wyd-columns", "--wyd-ratio"];
 const PASSTHROUGH = ["STYLE", "LINK"];
 const BASE_STYLES = ":host { display: block; container-type: inline-size; }";
 
@@ -32,7 +33,7 @@ const prune = (element: Element, attribute: string) => {
 const takeOver = (skeleton: Element) => {
 	skeleton.classList.remove(SKELETON);
 	if (skeleton instanceof HTMLElement)
-		skeleton.style.removeProperty("--wyd-columns");
+		VARIABLES.forEach((variable) => skeleton.style.removeProperty(variable));
 	skeleton.replaceChildren();
 	prune(skeleton, "class");
 	prune(skeleton, "style");

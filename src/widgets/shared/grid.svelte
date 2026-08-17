@@ -8,6 +8,7 @@
 		error: string | null;
 		count: number;
 		empty: string;
+		rows?: number;
 		labels?: boolean;
 		ratio?: string;
 	};
@@ -18,12 +19,13 @@
 		error,
 		count,
 		empty,
+		rows = 1,
 		labels = true,
 		ratio = "2 / 3",
 	}: Props = $props();
 
 	const placeholders = $derived(
-		Array.from({ length: count }, (_, index) => index),
+		Array.from({ length: count * rows }, (_, index) => index),
 	);
 
 	const stars = (rating: number) =>

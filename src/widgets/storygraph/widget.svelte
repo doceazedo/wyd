@@ -27,7 +27,7 @@
 		api,
 		user = "",
 		count = "5",
-		list = "currently-reading",
+		kind = "currently-reading",
 		labels = "true",
 		lang,
 	}: WidgetProps = $props();
@@ -35,7 +35,7 @@
 	const t = $derived(translations(lang));
 	const limit = $derived(Number(count) || 5);
 	const key = $derived(
-		LISTS[list as keyof typeof LISTS] || LISTS["currently-reading"],
+		LISTS[kind as keyof typeof LISTS] || LISTS["currently-reading"],
 	);
 
 	const profile = resource<Profile>(() =>

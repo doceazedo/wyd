@@ -2,7 +2,7 @@ import { json, type Handle } from "@sveltejs/kit";
 import { sequence } from "@sveltejs/kit/hooks";
 import { getTextDirection } from "$lib/paraglide/runtime";
 import { paraglideMiddleware } from "$lib/paraglide/server";
-import { cacheControl, read, write } from "$lib/server/cache";
+import { cacheControl, key, maxAge, read, write } from "$lib/server/cache";
 import { consume, retryAfter } from "$lib/server/rate-limit";
 import { record, type CacheStatus } from "$lib/server/usage";
 
@@ -56,11 +56,11 @@ const handleParaglide: Handle = ({ event, resolve }) =>
 	});
 
 const handleCache: Handle = async ({ event, resolve }) => {
-	const key = event.url.pathname;
-	if (event.request.method !== "GET" || !key.startsWith("/api/"))
+	if (event.request.method !== "GET" || !event.url.pathname.startsWith("/api/"))
 		return resolve(event);
 
-	const cached = await read(key);
+	const cacheKey = key(event.url);
+	const cached = await read(cacheKey);
 	if (cached)
 		return json(cached.value, {
 			headers: {
@@ -78,7 +78,8 @@ const handleCache: Handle = async ({ event, resolve }) => {
 		...(await response.json()),
 		updatedAt: new Date().toISOString(),
 	};
-	const expiresAt = await write(key, body);
+	const duration = maxAge(response.headers.get("Cache-Control"));
+	const expiresAt = await write(cacheKey, body, duration ?? undefined);
 
 	return json(body, {
 		headers: {

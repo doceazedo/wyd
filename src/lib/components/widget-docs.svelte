@@ -28,8 +28,8 @@
 <DocsSection title={m.docs_widget()}>
 	<CodeBlock {code} />
 
-	<div class="min-h-72 border p-6">
-		<WidgetPreview name={service.widget.name} attributes={values} />
+	<div class="min-h-48 border p-6">
+		<WidgetPreview widget={service.widget} {values} />
 	</div>
 
 	<OptionsTable

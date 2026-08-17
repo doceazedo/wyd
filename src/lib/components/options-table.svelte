@@ -2,6 +2,7 @@
 	import { Input } from "$lib/components/ui/input";
 	import { m } from "$lib/paraglide/messages.js";
 	import {
+		isEnabled,
 		maxValue,
 		type WidgetOption,
 		type WidgetValues,
@@ -44,14 +45,16 @@
 		</thead>
 		<tbody>
 			{#each options as option (option.attribute)}
-				<tr class="border-b">
+				{@const enabled = isEnabled(option, values)}
+				<tr class="border-b" class:opacity-50={!enabled}>
 					<td class="py-2 pr-3 font-mono">{option.attribute}</td>
 					<td class="py-2 pr-3 opacity-80">{option.description()}</td>
 					<td class="w-44 py-2">
 						{#if option.values}
 							<select
-								class="h-8 w-full border border-input bg-transparent px-2.5 text-xs outline-none focus-visible:border-ring focus-visible:ring-1 focus-visible:ring-ring/50 dark:bg-input/30"
+								class="h-8 w-full border border-input bg-transparent px-2.5 text-xs outline-none focus-visible:border-ring focus-visible:ring-1 focus-visible:ring-ring/50 disabled:cursor-not-allowed dark:bg-input/30"
 								aria-label={option.attribute}
+								disabled={!enabled}
 								bind:value={values[option.attribute]}
 							>
 								{#each option.values as choice (choice)}
@@ -64,6 +67,7 @@
 								aria-label={option.attribute}
 								min={option.min}
 								max={maxValue(option, values)}
+								disabled={!enabled}
 								bind:value={values[option.attribute]}
 								onblur={() => clamp(option)}
 							/>
@@ -71,6 +75,7 @@
 							<Input
 								type="text"
 								aria-label={option.attribute}
+								disabled={!enabled}
 								bind:value={values[option.attribute]}
 							/>
 						{/if}

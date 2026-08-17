@@ -28,13 +28,13 @@
 		api,
 		user = "",
 		count = "4",
-		list = "recent",
+		kind = "recent",
 		labels = "true",
 		lang,
 	}: WidgetProps = $props();
 
 	const t = $derived(translations(lang));
-	const key = $derived(LISTS[list as keyof typeof LISTS] || LISTS.recent);
+	const key = $derived(LISTS[kind as keyof typeof LISTS] || LISTS.recent);
 	const limit = $derived(
 		key === LISTS.favorites
 			? Math.min(Number(count) || FAVORITES_COUNT, FAVORITES_COUNT)

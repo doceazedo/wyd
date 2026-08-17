@@ -11,7 +11,9 @@ export type WidgetProps = {
 	api: string;
 	user?: string;
 	count?: string;
-	list?: string;
+	grid?: string;
+	kind?: string;
+	period?: string;
 	labels?: string;
 	lang?: string;
 };
