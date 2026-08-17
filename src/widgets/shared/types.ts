@@ -13,4 +13,5 @@ export type WidgetProps = {
 	count?: string;
 	list?: string;
 	labels?: string;
+	lang?: string;
 };

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { endpoint } from "../shared/api";
 	import Grid from "../shared/grid.svelte";
+	import { translations } from "../shared/i18n";
 	import { resource } from "../shared/resource.svelte";
 	import type { Item, WidgetProps } from "../shared/types";
 
@@ -14,6 +15,7 @@
 		title: string;
 		year: number | null;
 		url: string;
+		reviewUrl: string | null;
 		poster: string | null;
 		rating?: number | null;
 	};
@@ -28,8 +30,10 @@
 		count = "4",
 		list = "recent",
 		labels = "true",
+		lang,
 	}: WidgetProps = $props();
 
+	const t = $derived(translations(lang));
 	const key = $derived(LISTS[list as keyof typeof LISTS] || LISTS.recent);
 	const limit = $derived(
 		key === LISTS.favorites
@@ -48,7 +52,7 @@
 			subtitle: entry.year ? `${entry.year}` : null,
 			rating: entry.rating ?? null,
 			image: entry.poster,
-			url: entry.url,
+			url: key === LISTS.favorites ? entry.url : entry.reviewUrl || entry.url,
 		})),
 	);
 </script>
@@ -59,5 +63,5 @@
 	error={profile.error}
 	count={limit}
 	labels={labels !== "false"}
-	empty="No films to show here yet."
+	empty={t.emptyFilms}
 />

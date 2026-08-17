@@ -80,6 +80,7 @@
 	"option_count": "How many items to show",
 	"option_labels": "Set to \"false\" to show only the covers",
 	"option_list": "Which list to show",
+	"option_lang": "Language for the text (defaults to browser's locale)",
 
 	"endpoint_letterboxd": "Profile, watch counts, your ratings, favorite films, recent activity, and reviews.",
 	"endpoint_letterboxd_diary": "Diary entries with watch dates, ratings, likes, and rewatches.",

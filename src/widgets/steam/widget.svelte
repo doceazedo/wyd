@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { endpoint } from "../shared/api";
 	import Grid from "../shared/grid.svelte";
+	import { translations } from "../shared/i18n";
 	import { resource } from "../shared/resource.svelte";
 	import type { Item, WidgetProps } from "../shared/types";
 
@@ -17,8 +18,15 @@
 
 	const MAX_COUNT = 4;
 
-	let { api, user = "", count = "4", labels = "true" }: WidgetProps = $props();
+	let {
+		api,
+		user = "",
+		count = "4",
+		labels = "true",
+		lang,
+	}: WidgetProps = $props();
 
+	const t = $derived(translations(lang));
 	const limit = $derived(Math.min(Number(count) || MAX_COUNT, MAX_COUNT));
 
 	const played = resource<RecentlyPlayed>(() =>
@@ -29,9 +37,9 @@
 
 	const playtime = (minutes: number) => {
 		if (!minutes) return null;
-		if (minutes < 60) return `${minutes}min past 2 weeks`;
+		if (minutes < 60) return t.playtimeMinutes(`${minutes}`);
 
-		return `${Math.round(minutes / 6) / 10}h past 2 weeks`;
+		return t.playtimeHours(`${Math.round(minutes / 6) / 10}`);
 	};
 
 	const games = $derived<Item[]>(
@@ -52,5 +60,5 @@
 	error={played.error}
 	count={limit}
 	labels={labels !== "false"}
-	empty="No games played recently."
+	empty={t.emptyGames}
 />

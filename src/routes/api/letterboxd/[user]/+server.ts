@@ -136,12 +136,13 @@ const entries = (root: HTMLElement, selector: string): Entry[] =>
 
 const parseProfile = (root: HTMLElement, requested: string) => {
 	const favorites = entries(root, "#favourites").map(
-		({ id, slug, title, year, url, poster }) => ({
+		({ id, slug, title, year, url, reviewUrl, poster }) => ({
 			id,
 			slug,
 			title,
 			year,
 			url,
+			reviewUrl,
 			poster,
 		}),
 	);

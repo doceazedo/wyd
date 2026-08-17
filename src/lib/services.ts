@@ -52,6 +52,13 @@ const LABELS: WidgetOption = {
 	values: ["true", "false"],
 };
 
+const LANG: WidgetOption = {
+	attribute: "data-lang",
+	description: m.option_lang,
+	value: "default",
+	values: ["default", "en", "pt"],
+};
+
 export const SERVICES = {
 	letterboxd: {
 		name: "letterboxd",
@@ -62,6 +69,7 @@ export const SERVICES = {
 			name: "letterboxd",
 			options: [
 				user("doceazedo911"),
+				LANG,
 				count(4, (values) => (values["data-list"] === "favorites" ? 4 : null)),
 				LABELS,
 				{
@@ -80,7 +88,7 @@ export const SERVICES = {
 		icon: siSteam.svg,
 		widget: {
 			name: "steam",
-			options: [user("doceazedo911"), count(4, 4), LABELS],
+			options: [user("doceazedo911"), LANG, count(4, 4), LABELS],
 		},
 	},
 	storygraph: {
@@ -92,6 +100,7 @@ export const SERVICES = {
 			name: "storygraph",
 			options: [
 				user("bibiareads"),
+				LANG,
 				count(5),
 				LABELS,
 				{

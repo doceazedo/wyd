@@ -80,6 +80,7 @@
 	"option_count": "Quantos itens mostrar",
 	"option_labels": "Use \"false\" pra mostrar só as capas",
 	"option_list": "Qual lista mostrar",
+	"option_lang": "Idioma dos textos (usa o do navegador por padrão)",
 
 	"endpoint_letterboxd": "Perfil, contagem de filmes assistidos, suas notas, filmes favoritos, atividade recente e resenhas.",
 	"endpoint_letterboxd_diary": "Entradas do seu diário com datas, notas, curtidas e reassistidos.",

@@ -12,6 +12,7 @@ export type Film = {
 	title: string;
 	year: number | null;
 	url: string;
+	reviewUrl: string | null;
 	poster: string | null;
 };
 
@@ -130,6 +131,7 @@ export const parseFilm = (component: HTMLElement | null): Film | null => {
 	const link = absoluteUrl(component.getAttribute("data-item-link"));
 	if (!slug || !link) return null;
 
+	const target = absoluteUrl(component.getAttribute("data-target-link"));
 	const name = clean(component.getAttribute("data-item-name"));
 	const open = name.lastIndexOf(" (");
 	const year =
@@ -146,6 +148,7 @@ export const parseFilm = (component: HTMLElement | null): Film | null => {
 		title: alt || (year ? name.slice(0, open) : name),
 		year: toNumber(year),
 		url: link,
+		reviewUrl: target === link ? null : target,
 		poster: null,
 	};
 };

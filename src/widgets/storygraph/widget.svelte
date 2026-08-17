@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { endpoint } from "../shared/api";
 	import Grid from "../shared/grid.svelte";
+	import { translations } from "../shared/i18n";
 	import { resource } from "../shared/resource.svelte";
 	import type { Item, WidgetProps } from "../shared/types";
 
@@ -28,8 +29,10 @@
 		count = "5",
 		list = "currently-reading",
 		labels = "true",
+		lang,
 	}: WidgetProps = $props();
 
+	const t = $derived(translations(lang));
 	const limit = $derived(Number(count) || 5);
 	const key = $derived(
 		LISTS[list as keyof typeof LISTS] || LISTS["currently-reading"],
@@ -57,5 +60,5 @@
 	error={profile.error}
 	count={limit}
 	labels={labels !== "false"}
-	empty="No books to show here yet."
+	empty={t.emptyBooks}
 />
