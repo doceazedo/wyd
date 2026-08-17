@@ -1,10 +1,11 @@
 import { siLetterboxd, siSteam, siThestorygraph } from "simple-icons";
+import { m } from "$lib/paraglide/messages.js";
 
 export type WidgetValues = Record<string, string>;
 
 export type WidgetOption = {
 	attribute: string;
-	description: string;
+	description: () => string;
 	value: string;
 	values?: string[];
 	min?: number;
@@ -19,7 +20,7 @@ export type Widget = {
 export type Service = {
 	name: string;
 	title: string;
-	description: string;
+	description: () => string;
 	icon: string;
 	widget: Widget;
 };
@@ -27,18 +28,18 @@ export type Service = {
 export type Endpoint = {
 	path: string;
 	params: string[];
-	description: string;
+	description: () => string;
 };
 
 const user = (demo: string): WidgetOption => ({
 	attribute: "data-user",
-	description: "Username to load the activity from",
+	description: m.option_user,
 	value: demo,
 });
 
 const count = (value: number, max?: WidgetOption["max"]): WidgetOption => ({
 	attribute: "data-count",
-	description: "How many items to show",
+	description: m.option_count,
 	value: `${value}`,
 	min: 1,
 	max,
@@ -46,7 +47,7 @@ const count = (value: number, max?: WidgetOption["max"]): WidgetOption => ({
 
 const LABELS: WidgetOption = {
 	attribute: "data-labels",
-	description: 'Set to "false" to show only the covers',
+	description: m.option_labels,
 	value: "true",
 	values: ["true", "false"],
 };
@@ -55,7 +56,7 @@ export const SERVICES = {
 	letterboxd: {
 		name: "letterboxd",
 		title: "Letterboxd",
-		description: "Your top 4 films, and the movies you watched recently.",
+		description: m.service_letterboxd_description,
 		icon: siLetterboxd.svg,
 		widget: {
 			name: "letterboxd",
@@ -65,7 +66,7 @@ export const SERVICES = {
 				LABELS,
 				{
 					attribute: "data-list",
-					description: "Which list to show",
+					description: m.option_list,
 					value: "recent",
 					values: ["recent", "favorites"],
 				},
@@ -75,8 +76,7 @@ export const SERVICES = {
 	steam: {
 		name: "steam",
 		title: "Steam",
-		description:
-			"Playtime of your recently played games and what you're playing right now.",
+		description: m.service_steam_description,
 		icon: siSteam.svg,
 		widget: {
 			name: "steam",
@@ -86,8 +86,7 @@ export const SERVICES = {
 	storygraph: {
 		name: "storygraph",
 		title: "Storygraph",
-		description:
-			"Your currently reading books, recently read, to-read list, favorites, and owned.",
+		description: m.service_storygraph_description,
 		icon: siThestorygraph.svg,
 		widget: {
 			name: "storygraph",
@@ -97,7 +96,7 @@ export const SERVICES = {
 				LABELS,
 				{
 					attribute: "data-list",
-					description: "Which list to show",
+					description: m.option_list,
 					value: "read",
 					values: [
 						"currently-reading",
@@ -118,15 +117,11 @@ export const maxValue = (option: WidgetOption, values: WidgetValues) =>
 const ROUTES_DIR = "/src/routes";
 const ROUTE_FILE = "/+server.ts";
 
-const DESCRIPTIONS: Record<string, string> = {
-	"/api/letterboxd/{user}":
-		"Profile, watch counts, ratings histogram, favorite films, recent activity, and reviews.",
-	"/api/letterboxd/{user}/diary":
-		"Diary entries with watch dates, ratings, likes, and rewatches.",
-	"/api/steam/{user}/recently-played":
-		"Games played over the last two weeks and what you're playing right now.",
-	"/api/storygraph/{user}":
-		"Profile, reading goal, taste summary, and book lists.",
+const DESCRIPTIONS: Record<string, () => string> = {
+	"/api/letterboxd/{user}": m.endpoint_letterboxd,
+	"/api/letterboxd/{user}/diary": m.endpoint_letterboxd_diary,
+	"/api/steam/{user}/recently-played": m.endpoint_steam_recently_played,
+	"/api/storygraph/{user}": m.endpoint_storygraph,
 };
 
 const paramName = (segment: string) =>
@@ -153,7 +148,7 @@ const ENDPOINTS: Endpoint[] = Object.keys(
 	.map((path) => ({
 		path,
 		params: path.split("/").flatMap((segment) => paramName(segment) || []),
-		description: DESCRIPTIONS[path] || "",
+		description: DESCRIPTIONS[path] || (() => ""),
 	}));
 
 export const endpoints = (service: Service) =>
@@ -166,7 +161,7 @@ export const paramOption = (service: Service, param: string): WidgetOption => {
 
 	return option
 		? { ...option, attribute: param }
-		: { attribute: param, description: "", value: "" };
+		: { attribute: param, description: () => "", value: "" };
 };
 
 export const endpointUrl = (

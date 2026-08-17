@@ -3,6 +3,7 @@
 	import CodeBlock from "$lib/components/code-block.svelte";
 	import OptionsTable from "$lib/components/options-table.svelte";
 	import { Button } from "$lib/components/ui/button";
+	import { m } from "$lib/paraglide/messages.js";
 	import {
 		endpointUrl,
 		paramOption,
@@ -56,15 +57,15 @@
 			<span class="border px-1.5 py-0.5 text-xs font-medium">GET</span>
 			<span class="min-w-0 break-all">{endpoint.path}</span>
 		</h3>
-		{#if endpoint.description}
-			<p class="mt-1 opacity-80">{endpoint.description}</p>
+		{#if endpoint.description()}
+			<p class="mt-1 opacity-80">{endpoint.description()}</p>
 		{/if}
 	</hgroup>
 
 	<CodeBlock code={url}>
 		<Button variant="outline" onclick={send} disabled={loading}>
 			<RiPlayLine />
-			{loading ? "Sending..." : "Send"}
+			{loading ? m.docs_sending() : m.docs_send()}
 		</Button>
 	</CodeBlock>
 
@@ -77,6 +78,6 @@
 	{/if}
 
 	{#if options.length}
-		<OptionsTable label="Parameter" {options} bind:values />
+		<OptionsTable label={m.docs_parameter()} {options} bind:values />
 	{/if}
 </article>

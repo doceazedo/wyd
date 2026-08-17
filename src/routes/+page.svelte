@@ -3,6 +3,8 @@
 	import type { Pathname } from "$app/types";
 	import { Button } from "$lib/components/ui/button";
 	import * as Card from "$lib/components/ui/card";
+	import { m } from "$lib/paraglide/messages.js";
+	import { localizeHref } from "$lib/paraglide/runtime";
 	import { SERVICES } from "$lib/services";
 
 	const services = Object.values(SERVICES);
@@ -12,17 +14,23 @@
 	<hgroup>
 		<h1 class="mb-1 text-5xl font-extrabold lg:text-6xl">wyd?</h1>
 		<p class="text-lg">
-			Public collection of your online activity for your <a
+			{m.home_tagline_start()}<a
 				class="underline hover:opacity-80"
 				href="https://indieweb.org/now"
 				target="_blank"
 				rel="noopener noreferrer">/now</a
-			> page.
+			>{m.home_tagline_end()}
 		</p>
 	</hgroup>
 	<div class="flex gap-1.5">
-		<Button href="/guide" size="lg">Getting started</Button>
-		<Button href="/about" size="lg" variant="ghost">What is that?</Button>
+		<Button href={resolve(localizeHref("/guide") as Pathname)} size="lg"
+			>{m.home_cta_guide()}</Button
+		>
+		<Button
+			href={resolve(localizeHref("/about") as Pathname)}
+			size="lg"
+			variant="ghost">{m.home_cta_about()}</Button
+		>
 	</div>
 </header>
 
@@ -30,7 +38,7 @@
 	{#each services as service (service.name)}
 		<a
 			class="transition-all hover:-translate-y-1"
-			href={resolve(`/services/${service.name}` as Pathname)}
+			href={resolve(localizeHref(`/services/${service.name}`) as Pathname)}
 		>
 			<Card.Root class="h-full transition-all hover:ring-primary">
 				<Card.Content class="flex flex-col gap-3">
@@ -40,7 +48,7 @@
 						{@html service.icon}
 					</i>
 					<p class="text-base font-medium">{service.title}</p>
-					<p class="opacity-80">{service.description}</p>
+					<p class="opacity-80">{service.description()}</p>
 				</Card.Content>
 			</Card.Root>
 		</a>

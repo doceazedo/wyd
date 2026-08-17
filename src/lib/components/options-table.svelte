@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { Input } from "$lib/components/ui/input";
+	import { m } from "$lib/paraglide/messages.js";
 	import {
 		maxValue,
 		type WidgetOption,
@@ -37,15 +38,15 @@
 		<thead class="border-b">
 			<tr>
 				<th class="py-2 font-medium">{label}</th>
-				<th class="py-2 font-medium">Description</th>
-				<th class="py-2 font-medium">Value</th>
+				<th class="py-2 font-medium">{m.docs_description()}</th>
+				<th class="py-2 font-medium">{m.docs_value()}</th>
 			</tr>
 		</thead>
 		<tbody>
 			{#each options as option (option.attribute)}
 				<tr class="border-b">
 					<td class="py-2 pr-3 font-mono">{option.attribute}</td>
-					<td class="py-2 pr-3 opacity-80">{option.description}</td>
+					<td class="py-2 pr-3 opacity-80">{option.description()}</td>
 					<td class="w-44 py-2">
 						{#if option.values}
 							<select

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { Button } from "$lib/components/ui/button";
+	import { m } from "$lib/paraglide/messages.js";
 	import { RiCheckLine, RiFileCopyLine } from "remixicon-svelte";
 	import type { Snippet } from "svelte";
 
@@ -26,10 +27,10 @@
 		<Button onclick={copy}>
 			{#if copied}
 				<RiCheckLine />
-				Copied!
+				{m.docs_copied()}
 			{:else}
 				<RiFileCopyLine />
-				Copy
+				{m.docs_copy()}
 			{/if}
 		</Button>
 	</div>

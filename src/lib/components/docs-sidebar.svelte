@@ -4,7 +4,8 @@
 	import { page } from "$app/state";
 	import { afterNavigate } from "$app/navigation";
 	import * as Sidebar from "$lib/components/ui/sidebar/index.js";
-	import { deLocalizeHref } from "$lib/paraglide/runtime";
+	import { m } from "$lib/paraglide/messages.js";
+	import { deLocalizeHref, localizeHref } from "$lib/paraglide/runtime";
 	import { SERVICES } from "$lib/services";
 	import { RiBook2Line, RiQuestionLine, RiListCheck3 } from "remixicon-svelte";
 	import type { Component } from "svelte";
@@ -12,21 +13,21 @@
 
 	const ITEMS = [
 		{
-			title: "Getting started",
+			title: m.nav_guide,
 			url: "/guide",
 			icon: RiBook2Line,
 		},
 		{
-			title: "About",
+			title: m.nav_about,
 			url: "/about",
 			icon: RiQuestionLine,
 		},
 		{
-			title: "Usage",
+			title: m.nav_usage,
 			url: "/usage",
 			icon: RiListCheck3,
 		},
-	] satisfies { title: string; url: Pathname; icon: Component }[];
+	] satisfies { title: () => string; url: Pathname; icon: Component }[];
 
 	const sidebar = Sidebar.useSidebar();
 	const services = Object.values(SERVICES);
@@ -40,7 +41,7 @@
 	<Sidebar.Header>
 		<Sidebar.MenuButton class="h-fit">
 			{#snippet child({ props })}
-				<a href={resolve("/")} {...props}>
+				<a href={resolve(localizeHref("/") as Pathname)} {...props}>
 					<span class="text-2xl font-bold">wyd?</span>
 				</a>
 			{/snippet}
@@ -50,13 +51,16 @@
 		<Sidebar.Group>
 			<Sidebar.GroupContent>
 				<Sidebar.Menu>
-					{#each ITEMS as item (item.title)}
+					{#each ITEMS as item (item.url)}
 						<Sidebar.MenuItem>
 							<Sidebar.MenuButton isActive={isActive(item.url)}>
 								{#snippet child({ props })}
-									<a href={resolve(item.url)} {...props}>
+									<a
+										href={resolve(localizeHref(item.url) as Pathname)}
+										{...props}
+									>
 										<item.icon />
-										<span>{item.title}</span>
+										<span>{item.title()}</span>
 									</a>
 								{/snippet}
 							</Sidebar.MenuButton>
@@ -66,7 +70,7 @@
 			</Sidebar.GroupContent>
 		</Sidebar.Group>
 		<Sidebar.Group>
-			<Sidebar.GroupLabel>Services</Sidebar.GroupLabel>
+			<Sidebar.GroupLabel>{m.nav_services()}</Sidebar.GroupLabel>
 			<Sidebar.GroupContent>
 				<Sidebar.Menu>
 					{#each services as service (service.name)}
@@ -76,7 +80,9 @@
 							>
 								{#snippet child({ props })}
 									<a
-										href={resolve(`/services/${service.name}` as Pathname)}
+										href={resolve(
+											localizeHref(`/services/${service.name}`) as Pathname,
+										)}
 										{...props}
 									>
 										{@html service.icon}

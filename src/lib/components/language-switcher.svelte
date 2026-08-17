@@ -1,5 +1,6 @@
 <script lang="ts">
 	import * as Select from "$lib/components/ui/select/index.js";
+	import { m } from "$lib/paraglide/messages.js";
 	import { setLocale, getLocale, type Locale } from "$lib/paraglide/runtime";
 	import { onMount } from "svelte";
 
@@ -21,7 +22,7 @@
 
 <Select.Root
 	type="single"
-	name="favoriteFruit"
+	name="locale"
 	bind:value
 	onValueChange={() => value !== getLocale() && setLocale(value)}
 >
@@ -30,7 +31,7 @@
 	</Select.Trigger>
 	<Select.Content>
 		<Select.Group>
-			<Select.Label>Select a language:</Select.Label>
+			<Select.Label>{m.language_label()}</Select.Label>
 			{#each options as option (option.value)}
 				<Select.Item value={option.value} label={option.label}>
 					{option.label}

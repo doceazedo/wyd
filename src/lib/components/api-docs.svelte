@@ -2,6 +2,7 @@
 	import { resolve } from "$app/paths";
 	import ApiEndpoint from "$lib/components/api-endpoint.svelte";
 	import DocsSection from "$lib/components/docs-section.svelte";
+	import { m } from "$lib/paraglide/messages.js";
 	import { endpoints, type Service } from "$lib/services";
 
 	type Props = { service: Service };
@@ -9,7 +10,7 @@
 	let { service }: Props = $props();
 </script>
 
-<DocsSection title="API">
+<DocsSection title={m.docs_api()}>
 	<div class="flex flex-col gap-10">
 		{#each endpoints(service) as endpoint (endpoint.path)}
 			<ApiEndpoint {service} {endpoint} />

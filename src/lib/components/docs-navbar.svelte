@@ -1,7 +1,10 @@
 <script lang="ts">
 	import { resolve } from "$app/paths";
+	import type { Pathname } from "$app/types";
 	import { Button } from "$lib/components/ui/button/index.js";
 	import { useSidebar } from "$lib/components/ui/sidebar/index.js";
+	import { m } from "$lib/paraglide/messages.js";
+	import { localizeHref } from "$lib/paraglide/runtime";
 	import { RiMenuLine } from "remixicon-svelte";
 
 	const sidebar = useSidebar();
@@ -16,7 +19,9 @@
 		onclick={() => sidebar.setOpenMobile(true)}
 	>
 		<RiMenuLine />
-		<span class="sr-only">Open menu</span>
+		<span class="sr-only">{m.nav_open_menu()}</span>
 	</Button>
-	<a href={resolve("/")} class="text-2xl font-bold">wyd?</a>
+	<a href={resolve(localizeHref("/") as Pathname)} class="text-2xl font-bold"
+		>wyd?</a
+	>
 </header>

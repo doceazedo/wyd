@@ -4,6 +4,7 @@
 	import DocsSection from "$lib/components/docs-section.svelte";
 	import OptionsTable from "$lib/components/options-table.svelte";
 	import WidgetPreview from "$lib/components/widget-preview.svelte";
+	import { m } from "$lib/paraglide/messages.js";
 	import { snippet, type Service, type WidgetValues } from "$lib/services";
 	import { untrack } from "svelte";
 
@@ -24,7 +25,7 @@
 	const code = $derived(snippet(service.widget, values, page.url.origin));
 </script>
 
-<DocsSection title="Widget">
+<DocsSection title={m.docs_widget()}>
 	<CodeBlock {code} />
 
 	<div class="min-h-72 border p-6">
@@ -32,7 +33,7 @@
 	</div>
 
 	<OptionsTable
-		label="Attribute"
+		label={m.docs_attribute()}
 		options={service.widget.options}
 		bind:values
 	/>
