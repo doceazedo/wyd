@@ -5,7 +5,8 @@
 	import * as Sidebar from "$lib/components/ui/sidebar/index.js";
 	import { deLocalizeHref } from "$lib/paraglide/runtime";
 	import { SERVICES } from "$lib/services";
-	import { RiBook2Line, RiQuestionLine } from "remixicon-svelte";
+	import { RiBook2Line, RiQuestionLine, RiListCheck3 } from "remixicon-svelte";
+	import type { Component } from "svelte";
 
 	const ITEMS = [
 		{
@@ -18,7 +19,12 @@
 			url: "/about",
 			icon: RiQuestionLine,
 		},
-	] satisfies { title: string; url: Pathname; icon: unknown }[];
+		{
+			title: "Usage",
+			url: "/usage",
+			icon: RiListCheck3,
+		},
+	] satisfies { title: string; url: Pathname; icon: Component }[];
 
 	const services = Object.values(SERVICES);
 	const pathname = $derived(deLocalizeHref(page.url.pathname));
