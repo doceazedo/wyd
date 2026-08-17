@@ -23,6 +23,12 @@ export type Service = {
 	widget: Widget;
 };
 
+export type Endpoint = {
+	path: string;
+	params: string[];
+	description: string;
+};
+
 const user = (demo: string): WidgetOption => ({
 	attribute: "data-user",
 	description: "Username to load the activity from",
@@ -102,6 +108,76 @@ export const SERVICES = {
 
 export const maxValue = (option: WidgetOption, values: WidgetValues) =>
 	typeof option.max === "function" ? option.max(values) : (option.max ?? null);
+
+const ROUTES_DIR = "/src/routes";
+const ROUTE_FILE = "/+server.ts";
+
+const DESCRIPTIONS: Record<string, string> = {
+	"/api/letterboxd/{user}":
+		"Profile, watch counts, ratings histogram, favorite films, recent activity, and reviews.",
+	"/api/letterboxd/{user}/diary":
+		"Diary entries with watch dates, ratings, likes, and rewatches.",
+	"/api/steam/{user}/recently-played":
+		"Games played over the last two weeks and what you're playing right now.",
+	"/api/storygraph/{user}":
+		"Profile, reading goal, taste summary, and book lists.",
+};
+
+const paramName = (segment: string) =>
+	segment.startsWith("{") && segment.endsWith("}")
+		? segment.slice(1, -1)
+		: null;
+
+const toPath = (file: string) =>
+	file
+		.slice(ROUTES_DIR.length, -ROUTE_FILE.length)
+		.split("/")
+		.map((segment) =>
+			segment.startsWith("[") && segment.endsWith("]")
+				? `{${segment.slice(1, -1)}}`
+				: segment,
+		)
+		.join("/");
+
+const ENDPOINTS: Endpoint[] = Object.keys(
+	import.meta.glob("/src/routes/api/**/+server.ts"),
+)
+	.map(toPath)
+	.sort()
+	.map((path) => ({
+		path,
+		params: path.split("/").flatMap((segment) => paramName(segment) || []),
+		description: DESCRIPTIONS[path] || "",
+	}));
+
+export const endpoints = (service: Service) =>
+	ENDPOINTS.filter((endpoint) => endpoint.path.split("/")[2] === service.name);
+
+export const paramOption = (service: Service, param: string): WidgetOption => {
+	const option = service.widget.options.find(
+		(candidate) => candidate.attribute === `data-${param}`,
+	);
+
+	return option
+		? { ...option, attribute: param }
+		: { attribute: param, description: "", value: "" };
+};
+
+export const endpointUrl = (
+	endpoint: Endpoint,
+	values: WidgetValues,
+	origin: string,
+) =>
+	origin +
+	endpoint.path
+		.split("/")
+		.map((segment) => {
+			const param = paramName(segment);
+			if (!param) return segment;
+
+			return values[param] ? encodeURIComponent(values[param]) : segment;
+		})
+		.join("/");
 
 const BOX = "background:var(--wyd-ink)";
 
