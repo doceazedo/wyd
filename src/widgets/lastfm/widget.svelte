@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { onDestroy, onMount } from "svelte";
 	import { endpoint } from "../shared/api";
 	import Grid from "../shared/grid.svelte";
 	import { translations } from "../shared/i18n";
@@ -25,6 +26,7 @@
 	const RECENT_TRACKS = "recent-tracks";
 	const DEFAULT_GRID = "4x2";
 	const DEFAULT_PERIOD = "7d";
+	const REFRESH = 90 * 1000;
 
 	const LISTS = {
 		"recent-tracks": "tracks",
@@ -74,6 +76,16 @@
 	});
 
 	const data = resource<Payload>(() => (path ? endpoint(api, path) : null));
+
+	let timer: ReturnType<typeof setInterval> | null = null;
+
+	onMount(() => {
+		if (live) timer = setInterval(() => data.reload(), REFRESH);
+	});
+
+	onDestroy(() => {
+		if (timer) clearInterval(timer);
+	});
 
 	const playing = $derived(data.data?.nowPlaying || null);
 	const current = $derived(playing || data.data?.tracks?.[0] || null);

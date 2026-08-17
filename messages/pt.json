@@ -79,9 +79,9 @@
 
 	"option_user": "Usuário de qual buscar a atividade",
 	"option_count": "Quantos itens mostrar",
-	"option_limit": "Quantos itens retornar",
+	"option_limit": "Máximo de itens à retornar",
 	"option_grid": "Tamanho da grade (colunas × linhas)",
-	"option_period": "Período de tempo das listas de mais tocados",
+	"option_period": "Intervalo de tempo dos dados",
 	"option_labels": "Use \"false\" pra mostrar só as capas",
 	"option_kind": "Qual tipo de conteúdo mostrar",
 	"option_lang": "Idioma dos textos (usa o do navegador por padrão)",

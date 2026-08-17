@@ -79,9 +79,9 @@
 
 	"option_user": "Username to load the activity from",
 	"option_count": "How many items to show",
-	"option_limit": "How many items to return",
+	"option_limit": "Max number of items to return",
 	"option_grid": "Grid size (columns × rows)",
-	"option_period": "Time range for the top lists",
+	"option_period": "Time period to retrieve data for",
 	"option_labels": "Set to \"false\" to show only the covers",
 	"option_kind": "What kind of content to show",
 	"option_lang": "Language for the text (defaults to browser's locale)",
