@@ -2,6 +2,7 @@
 	import type { Pathname } from "$app/types";
 	import { resolve } from "$app/paths";
 	import { page } from "$app/state";
+	import { afterNavigate } from "$app/navigation";
 	import * as Sidebar from "$lib/components/ui/sidebar/index.js";
 	import { deLocalizeHref } from "$lib/paraglide/runtime";
 	import { SERVICES } from "$lib/services";
@@ -27,9 +28,12 @@
 		},
 	] satisfies { title: string; url: Pathname; icon: Component }[];
 
+	const sidebar = Sidebar.useSidebar();
 	const services = Object.values(SERVICES);
 	const pathname = $derived(deLocalizeHref(page.url.pathname));
 	const isActive = (url: string) => pathname === url;
+
+	afterNavigate(() => sidebar.setOpenMobile(false));
 </script>
 
 <Sidebar.Root>

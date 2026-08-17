@@ -43,6 +43,6 @@
 	{/each}
 </div>
 
-<div class="mx-auto max-w-5xl px-3 md:px-12 xl:px-0">
+<div class="mx-auto max-w-5xl p-3 md:px-12 xl:px-0">
 	{@render children()}
 </div>
