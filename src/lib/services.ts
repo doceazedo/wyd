@@ -4,6 +4,7 @@ import {
 	siSteam,
 	siThestorygraph,
 } from "simple-icons";
+import { env } from "$env/dynamic/public";
 import { m } from "$lib/paraglide/messages.js";
 
 export type WidgetValues = Record<string, string>;
@@ -39,8 +40,17 @@ export type Endpoint = {
 	path: string;
 	params: string[];
 	query: string[];
+	cache: number;
 	description: () => string;
 };
+
+export const HOUR = 60 * 60;
+
+export const RECENT_TRACKS_CACHE = 90;
+
+export const SPOTIFY_IMAGE_CACHE_DAYS = 30;
+
+const DEFAULT_CACHE = Number(env.PUBLIC_CACHE_DURATION || 1) * HOUR;
 
 const user = (demo: string): WidgetOption => ({
 	attribute: "data-user",
@@ -216,6 +226,10 @@ const DESCRIPTIONS: Record<string, () => string> = {
 	"/api/storygraph/{user}": m.endpoint_storygraph,
 };
 
+const CACHE: Record<string, number> = {
+	"/api/lastfm/{user}/recent-tracks": RECENT_TRACKS_CACHE,
+};
+
 const QUERY: Record<string, string[]> = {
 	"/api/lastfm/{user}/recent-tracks": ["limit"],
 	"/api/lastfm/{user}/top-albums": ["limit", "period"],
@@ -254,6 +268,7 @@ const ENDPOINTS: Endpoint[] = Object.keys(
 				...query,
 			],
 			query,
+			cache: CACHE[path] ?? DEFAULT_CACHE,
 			description: DESCRIPTIONS[path] || (() => ""),
 		};
 	});

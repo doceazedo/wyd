@@ -3,10 +3,11 @@
 	import PageTitle from "$lib/components/page-title.svelte";
 	import WidgetDocs from "$lib/components/widget-docs.svelte";
 	import type { Service } from "$lib/services";
+	import type { Snippet } from "svelte";
 
-	type Props = { service: Service };
+	type Props = { service: Service; children?: Snippet };
 
-	let { service }: Props = $props();
+	let { service, children }: Props = $props();
 </script>
 
 <div class="flex flex-col gap-12 pb-24">
@@ -16,4 +17,5 @@
 	</hgroup>
 	<WidgetDocs {service} />
 	<ApiDocs {service} />
+	{@render children?.()}
 </div>

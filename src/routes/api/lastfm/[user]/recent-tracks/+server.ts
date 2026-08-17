@@ -11,10 +11,9 @@ import {
 	toNumber,
 	type RawTrack,
 } from "$lib/services/lastfm";
+import { RECENT_TRACKS_CACHE } from "$lib/services";
 import { coverOf, covers, type Images } from "$lib/services/spotify";
 import type { RequestHandler } from "./$types";
-
-const MAX_AGE = 90;
 
 type Track = {
 	name: string | null;
@@ -69,7 +68,11 @@ export const GET: RequestHandler = async ({ params, url }) => {
 				nowPlaying: playing ? parseTrack(playing, images) : null,
 				tracks: played.map((track) => parseTrack(track, images)),
 			},
-			{ headers: { "Cache-Control": `public, max-age=${MAX_AGE}` } },
+			{
+				headers: {
+					"Cache-Control": `public, max-age=${RECENT_TRACKS_CACHE}`,
+				},
+			},
 		);
 	} catch (err) {
 		if (err instanceof LastfmError) error(err.status, err.message);

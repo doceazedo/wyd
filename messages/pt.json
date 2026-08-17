@@ -25,6 +25,12 @@
 	"docs_sending": "Rodando...",
 	"docs_copy": "Copiar",
 	"docs_copied": "Copiado!",
+	"docs_notes": "Notas",
+	"docs_notes_lastfm_images": "As imagens de álbuns e artistas são fornecidas pelo Spotify, e podem ficar em cache por até {days} dias. As capas de álbum usam a arte do próprio Last.fm quando não encontradas no Spotify.",
+	"docs_cache": "Duração do cache:",
+	"docs_cache_hour": "1 hora",
+	"docs_cache_hours": "{count} horas",
+	"docs_cache_seconds": "{count} segundos",
 
 	"guide_title": "Primeiros passos",
 

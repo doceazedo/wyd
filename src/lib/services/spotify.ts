@@ -1,10 +1,11 @@
 import { env } from "$env/dynamic/private";
 import { read, write } from "$lib/server/cache";
+import { SPOTIFY_IMAGE_CACHE_DAYS } from "$lib/services";
 
 const TOKEN_URL = "https://accounts.spotify.com/api/token";
 const API_URL = "https://api.spotify.com/v1";
 
-const DURATION = 30 * 24 * 60 * 60 * 1000;
+const DURATION = SPOTIFY_IMAGE_CACHE_DAYS * 24 * 60 * 60 * 1000;
 const CONCURRENCY = 8;
 const RESULTS = 5;
 

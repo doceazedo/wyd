@@ -7,6 +7,7 @@
 	import {
 		endpointUrl,
 		paramOption,
+		HOUR,
 		type Endpoint,
 		type Service,
 		type WidgetValues,
@@ -36,6 +37,17 @@
 
 	const url = $derived(endpointUrl(endpoint, values, page.url.origin));
 
+	const cache = $derived.by(() => {
+		if (endpoint.cache < HOUR)
+			return m.docs_cache_seconds({ count: endpoint.cache });
+
+		const hours = endpoint.cache / HOUR;
+
+		return hours === 1
+			? m.docs_cache_hour()
+			: m.docs_cache_hours({ count: hours });
+	});
+
 	const send = async () => {
 		loading = true;
 		error = null;
@@ -58,8 +70,12 @@
 			<span class="min-w-0 break-all">{endpoint.path}</span>
 		</h3>
 		{#if endpoint.description()}
-			<p class="mt-1 opacity-80">{endpoint.description()}</p>
+			<p class="mt-1 text-foreground/80">{endpoint.description()}</p>
 		{/if}
+		<p class="mt-1 text-foreground/80">
+			<b class="font-medium text-foreground">{m.docs_cache()}</b>
+			{cache}
+		</p>
 	</hgroup>
 
 	<CodeBlock code={url}>

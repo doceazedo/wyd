@@ -25,6 +25,12 @@
 	"docs_sending": "Sending...",
 	"docs_copy": "Copy",
 	"docs_copied": "Copied!",
+	"docs_notes": "Notes",
+	"docs_notes_lastfm_images": "Album and artist images are provided by Spotify, and may be cached for up to {days} days each. Album covers fall back to Last.fm's own artwork when Spotify has no match.",
+	"docs_cache": "Cache duration:",
+	"docs_cache_hour": "1 hour",
+	"docs_cache_hours": "{count} hours",
+	"docs_cache_seconds": "{count} seconds",
 
 	"guide_title": "Getting started",
 
