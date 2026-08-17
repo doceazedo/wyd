@@ -1,0 +1,56 @@
+<script lang="ts">
+	import { endpoint } from "../shared/api";
+	import Grid from "../shared/grid.svelte";
+	import { resource } from "../shared/resource.svelte";
+	import type { Item, WidgetProps } from "../shared/types";
+
+	type Game = {
+		id: string;
+		name: string | null;
+		cover: string | null;
+		header: string | null;
+		playtime2Weeks: number;
+		url: string;
+	};
+
+	type RecentlyPlayed = { games: Game[] };
+
+	const MAX_COUNT = 4;
+
+	let { api, user = "", count = "4", labels = "true" }: WidgetProps = $props();
+
+	const limit = $derived(Math.min(Number(count) || MAX_COUNT, MAX_COUNT));
+
+	const played = resource<RecentlyPlayed>(() =>
+		user
+			? endpoint(api, `/api/steam/${encodeURIComponent(user)}/recently-played`)
+			: null,
+	);
+
+	const playtime = (minutes: number) => {
+		if (!minutes) return null;
+		if (minutes < 60) return `${minutes}min past 2 weeks`;
+
+		return `${Math.round(minutes / 6) / 10}h past 2 weeks`;
+	};
+
+	const games = $derived<Item[]>(
+		(played.data?.games || []).slice(0, limit).map((game) => ({
+			id: game.id,
+			title: game.name || game.id,
+			subtitle: playtime(game.playtime2Weeks),
+			rating: null,
+			image: game.cover || game.header,
+			url: game.url,
+		})),
+	);
+</script>
+
+<Grid
+	items={games}
+	loading={played.loading}
+	error={played.error}
+	count={limit}
+	labels={labels !== "false"}
+	empty="No games played recently."
+/>

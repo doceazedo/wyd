@@ -1,7 +1,11 @@
 <script lang="ts">
+	import type { Pathname } from "$app/types";
+	import { resolve } from "$app/paths";
+	import { page } from "$app/state";
 	import * as Sidebar from "$lib/components/ui/sidebar/index.js";
+	import { deLocalizeHref } from "$lib/paraglide/runtime";
+	import { SERVICES } from "$lib/services";
 	import { RiBook2Line, RiQuestionLine } from "remixicon-svelte";
-	import { siLetterboxd, siSteam, siThestorygraph } from "simple-icons";
 
 	const ITEMS = [
 		{
@@ -14,32 +18,18 @@
 			url: "/about",
 			icon: RiQuestionLine,
 		},
-	];
+	] satisfies { title: string; url: Pathname; icon: unknown }[];
 
-	const SERVICES = [
-		{
-			title: "Letterboxd",
-			url: "/",
-			icon: siLetterboxd.svg,
-		},
-		{
-			title: "Steam",
-			url: "/",
-			icon: siSteam.svg,
-		},
-		{
-			title: "Storygraph",
-			url: "/",
-			icon: siThestorygraph.svg,
-		},
-	];
+	const services = Object.values(SERVICES);
+	const pathname = $derived(deLocalizeHref(page.url.pathname));
+	const isActive = (url: string) => pathname === url;
 </script>
 
 <Sidebar.Root>
 	<Sidebar.Header>
 		<Sidebar.MenuButton class="h-fit">
 			{#snippet child({ props })}
-				<a href="/" {...props}>
+				<a href={resolve("/")} {...props}>
 					<span class="text-2xl font-bold">wyd?</span>
 				</a>
 			{/snippet}
@@ -51,9 +41,9 @@
 				<Sidebar.Menu>
 					{#each ITEMS as item (item.title)}
 						<Sidebar.MenuItem>
-							<Sidebar.MenuButton>
+							<Sidebar.MenuButton isActive={isActive(item.url)}>
 								{#snippet child({ props })}
-									<a href={item.url} {...props}>
+									<a href={resolve(item.url)} {...props}>
 										<item.icon />
 										<span>{item.title}</span>
 									</a>
@@ -68,13 +58,18 @@
 			<Sidebar.GroupLabel>Services</Sidebar.GroupLabel>
 			<Sidebar.GroupContent>
 				<Sidebar.Menu>
-					{#each SERVICES as item (item.title)}
+					{#each services as service (service.name)}
 						<Sidebar.MenuItem>
-							<Sidebar.MenuButton>
+							<Sidebar.MenuButton
+								isActive={isActive(`/services/${service.name}`)}
+							>
 								{#snippet child({ props })}
-									<a href={item.url} {...props}>
-										{@html item.icon}
-										<span>{item.title}</span>
+									<a
+										href={resolve(`/services/${service.name}` as Pathname)}
+										{...props}
+									>
+										{@html service.icon}
+										<span>{service.title}</span>
 									</a>
 								{/snippet}
 							</Sidebar.MenuButton>

@@ -40,4 +40,10 @@ export default defineConfig(
 			"svelte/no-at-html-tags": "off",
 		},
 	},
+	{
+		files: ["src/widgets/**"],
+		rules: {
+			"svelte/no-navigation-without-resolve": "off",
+		},
+	},
 );
