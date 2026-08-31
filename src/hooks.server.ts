@@ -35,6 +35,10 @@ const handleUsage: Handle = async ({ event, resolve }) => {
 
 	await record({
 		pathname: event.url.pathname,
+		origin:
+			event.request.headers.get("Origin") ||
+			event.request.headers.get("Referer"),
+		self: event.url.origin,
 		status: response.status,
 		cache: (response.headers.get("X-Cache") as CacheStatus) || "BYPASS",
 		duration: Date.now() - startedAt,

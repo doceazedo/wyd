@@ -4,6 +4,8 @@ export type CacheStatus = "HIT" | "MISS" | "BYPASS";
 
 type Request = {
 	pathname: string;
+	origin: string | null;
+	self: string;
 	status: number;
 	cache: CacheStatus;
 	duration: number;
@@ -20,6 +22,8 @@ type Stats = {
 	firstAt: string;
 	lastAt: string;
 };
+
+const DIRECT = "@direct";
 
 const CACHE_FIELDS = {
 	HIT: "hits",
@@ -53,12 +57,27 @@ const route = (pathname: string) => {
 	};
 };
 
-const routeKey = ({ service, endpoint, username }: ReturnType<typeof route>) =>
-	["usage:routes", service, endpoint, username].filter(Boolean).join(":");
+const routeKey = (
+	prefix: string,
+	{ service, endpoint, username }: ReturnType<typeof route>,
+) => [prefix, service, endpoint, username].filter(Boolean).join(":");
+
+const host = (value: string | null) => {
+	if (!value) return null;
+
+	try {
+		const { hostname } = new URL(value);
+		const lowercased = hostname.toLowerCase();
+
+		return lowercased.startsWith("www.") ? lowercased.slice(4) : lowercased;
+	} catch {
+		return null;
+	}
+};
 
 const bump = async (
 	key: string,
-	{ status, cache, duration }: Omit<Request, "pathname">,
+	{ status, cache, duration }: Pick<Request, "status" | "cache" | "duration">,
 	at: string,
 	details: Record<string, unknown> = {},
 ) => {
@@ -77,13 +96,31 @@ const bump = async (
 	});
 };
 
-export const record = async ({ pathname, ...request }: Request) => {
+export const record = async ({
+	pathname,
+	origin,
+	self,
+	...request
+}: Request) => {
 	try {
 		const at = new Date().toISOString();
+		const date = at.slice(0, 10);
 		const details = route(pathname);
+		const site = host(origin);
 
-		await bump(routeKey(details), request, at, details);
-		await bump(`usage:days:${at.slice(0, 10)}`, request, at);
+		await bump(routeKey("usage:routes", details), request, at, details);
+		await bump(`usage:days:${date}`, request, at);
+		await bump(`usage:hours:${at.slice(0, 13)}`, request, at);
+		await bump(routeKey(`usage:daily:routes:${date}`, details), request, at, {
+			...details,
+			date,
+		});
+
+		if (site !== host(self))
+			await bump(`usage:daily:origins:${date}:${site ?? DIRECT}`, request, at, {
+				host: site,
+				date,
+			});
 	} catch (err) {
 		console.error("could not record usage", err);
 	}
